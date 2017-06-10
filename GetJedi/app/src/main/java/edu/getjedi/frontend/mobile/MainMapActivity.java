@@ -1,8 +1,12 @@
 package edu.getjedi.frontend.mobile;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -31,12 +35,22 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         Log.i("DEBUG","onRestore!");
     }
 
+    private boolean hasLocationPermissions() {
+        return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+    }
+
     @Override
     protected void onStart(){
         super.onStart();
         // Acquire a reference to the system Location Manager
         // Define a listener that responds to location updates
         locationHandler = new UserLocationHandler(this);
+        if (!hasLocationPermissions()) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 10);
+        }else {
+            locationHandler.register();
+        }
     }
 
     @Override
@@ -74,5 +88,15 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     @Override
     public void onMapReady(GoogleMap googleMap) {
         locationHandler.setGoogleMap(googleMap);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if( grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            locationHandler.register();
+        } else {
+            Toast.makeText(getApplicationContext(),"Recurso negado",Toast.LENGTH_LONG).show();
+        }
+        return;
     }
 }
