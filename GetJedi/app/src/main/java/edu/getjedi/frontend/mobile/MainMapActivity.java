@@ -35,9 +35,10 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         Log.i("DEBUG","onRestore!");
     }
 
-    private boolean hasLocationPermissions() {
+    private boolean hasLocationAndInternetPermissions() {
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED;
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED;
     }
 
     @Override
@@ -46,10 +47,12 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         // Acquire a reference to the system Location Manager
         // Define a listener that responds to location updates
         locationHandler = new UserLocationHandler(this);
-        if (!hasLocationPermissions()) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, 10);
+        if (!hasLocationAndInternetPermissions()) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET}, 10);
         }else {
             locationHandler.register();
+            HTTPHandler hp = new HTTPHandler(this);
+            hp.loginToServer("k","k");
         }
     }
 
@@ -94,8 +97,10 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if( grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             locationHandler.register();
+            HTTPHandler hp = new HTTPHandler(this);
+            hp.loginToServer("k","k");
         } else {
-            Toast.makeText(getApplicationContext(),"Recurso negado",Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),"Você deve dar permissão ao aplicativo para acessar o GPS do aparelho e a internet",Toast.LENGTH_LONG).show();
         }
         return;
     }
