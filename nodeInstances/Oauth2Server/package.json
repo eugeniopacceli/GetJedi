@@ -1,0 +1,22 @@
+{
+  "name": "oauth2server",
+  "version": "1.0.0",
+  "description": "An OAuth 2 server test.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "oauth2",
+    "server",
+    "authentication",
+    "test"
+  ],
+  "author": "Eugenio",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "express": "^4.15.3",
+    "oauth2-server": "^2.4.1"
+  }
+}
