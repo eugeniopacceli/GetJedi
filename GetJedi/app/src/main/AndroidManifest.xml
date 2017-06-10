@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.frontend.mobile.getjedi">
+    package="edu.getjedi.frontend.mobile">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -9,6 +9,7 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-feature android:name="android.hardware.location.gps" />
 
     <application
@@ -32,7 +33,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".MainMapActivity"
+            android:name="edu.getjedi.frontend.mobile.MainMapActivity"
             android:label="@string/title_activity_main_map">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

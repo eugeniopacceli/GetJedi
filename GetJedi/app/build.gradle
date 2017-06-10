@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
     defaultConfig {
-        applicationId "edu.frontend.mobile.getjedi"
+        applicationId "edu.getjedi.frontend.mobile"
         minSdkVersion 19
         targetSdkVersion 25
         versionCode 1
