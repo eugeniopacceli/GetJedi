@@ -11,7 +11,7 @@ android:layout_height="match_parent">
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="edu.getjedi.frontend.mobile.edu.getjedi.frontend.mobile.MainMapActivity" />
+    tools:context="edu.getjedi.frontend.mobile.MainMapActivity" />
 <!-- The navigation drawer -->
 <ListView android:id="@+id/left_drawer"
     android:layout_width="240dp"

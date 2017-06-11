@@ -5,17 +5,21 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 
-import edu.getjedi.frontend.mobile.R;
+import java.util.ArrayList;
 
 public class MainMapActivity extends FragmentActivity implements OnMapReadyCallback {
     private UserLocationHandler locationHandler;
+    private DrawerMenuHandler menuHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +29,9 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        // Set the list's click listener
+        ListView mDrawerList = (ListView) findViewById(R.id.left_drawer);
+        menuHandler = new DrawerMenuHandler(this, mDrawerList);
     }
 
     @Override
