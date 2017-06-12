@@ -1,27 +1,29 @@
 package edu.getjedi.frontend.mobile;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class UserLocationHandler implements LocationListener {
-    private GoogleMap googleMap;
-    private LocationManager locationManager;
+    private static GoogleMap googleMap;
+    private static LocationManager locationManager;
+    private static UserLocationHandler userLocationHandler;
 
-    public UserLocationHandler(FragmentActivity mainScreen){
+    private UserLocationHandler(FragmentActivity mainScreen){
         locationManager = (LocationManager) mainScreen.getSystemService(Context.LOCATION_SERVICE);
     }
 
-    public void register() throws SecurityException{
-        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, this);
+    public void zoomToUser(GoogleMap map,LatLng user){
+        // Zoom in, animating the camera.
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(user,8));
     }
 
     public void onLocationChanged(Location location) {
@@ -29,7 +31,8 @@ public class UserLocationHandler implements LocationListener {
         LatLng user = new LatLng(location.getLatitude(), location.getLongitude());
         if(googleMap != null) {
             googleMap.clear();
-            googleMap.addMarker(new MarkerOptions().position(user).title("User location"));
+            googleMap.addMarker(new MarkerOptions().position(user).title(StringTable.userInMap));
+            zoomToUser(googleMap, user);
         }
     }
 
@@ -48,5 +51,13 @@ public class UserLocationHandler implements LocationListener {
 
     public void setGoogleMap(GoogleMap googleMap) {
         this.googleMap = googleMap;
+    }
+
+    public static UserLocationHandler getInstanceOf(FragmentActivity mainScreen) throws SecurityException{
+        if(userLocationHandler == null){
+            userLocationHandler = new UserLocationHandler(mainScreen);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, userLocationHandler);
+        }
+        return userLocationHandler;
     }
 }

@@ -1,4 +1,8 @@
 <resources>
     <string name="app_name">GetJedi</string>
     <string name="title_activity_main_map">MainMap</string>
+    <string name="username">Email</string>
+    <string name="password">Senha</string>
+    <string name="login">Login</string>
+    <string name="cancel">Cancelar</string>
 </resources>
