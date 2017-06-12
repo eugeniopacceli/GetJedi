@@ -8,16 +8,16 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+
+import java.util.ArrayList;
 
 import edu.getjedi.frontend.mobile.io.Memory;
 import edu.getjedi.frontend.mobile.network.HTTPHandler;
@@ -30,6 +30,7 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     private DrawerLayout drawerLayout;
     private ListView listMenu;
     private AppContext appContext;
+    private DialogFactory dialogFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,7 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         // Set the list's click listener
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         listMenu = (ListView) findViewById(R.id.left_drawer);
+        dialogFactory = new DialogFactory(this);
     }
 
     private boolean hasLocationAndInternetPermissions() {
@@ -57,34 +59,12 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
             locationHandler = UserLocationHandler.getInstanceOf(this);
             httpHandler = HTTPHandler.getInstanceOf(this);
         }catch (Exception e){
-            Toast.makeText(getApplicationContext(),StringTable.sensorException,Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(),StringTable.SENSOR_EXCEPTION,Toast.LENGTH_LONG).show();
         }
     }
 
     public void revealDrawer(){
         drawerLayout.openDrawer(Gravity.LEFT);
-    }
-
-    public void showLoginForm(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        // Get the layout inflater
-        LayoutInflater inflater = this.getLayoutInflater();
-
-        // Inflate and set the layout for the dialog
-        // Pass null as the parent view because its going in the dialog layout
-        builder.setView(inflater.inflate(R.layout.dialog_login, null))
-                // Add action buttons
-                .setPositiveButton(R.string.login, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        // sign in the user ...
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
-        builder.create().show();
     }
 
     @Override
@@ -140,8 +120,12 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         if( grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             initializeSensorsAccess();
         } else {
-            Toast.makeText(getApplicationContext(), StringTable.sensorDenied,Toast.LENGTH_LONG).show();
+            Toast.makeText(getApplicationContext(), StringTable.SENSOR_DENIED,Toast.LENGTH_LONG).show();
         }
         return;
+    }
+
+    public DialogFactory getDialogFactory() {
+        return dialogFactory;
     }
 }

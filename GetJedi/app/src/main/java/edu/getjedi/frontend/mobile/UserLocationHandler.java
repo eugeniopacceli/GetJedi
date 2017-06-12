@@ -31,7 +31,7 @@ public class UserLocationHandler implements LocationListener {
         LatLng user = new LatLng(location.getLatitude(), location.getLongitude());
         if(googleMap != null) {
             googleMap.clear();
-            googleMap.addMarker(new MarkerOptions().position(user).title(StringTable.userInMap));
+            googleMap.addMarker(new MarkerOptions().position(user).title(StringTable.USER_IN_MAP));
             zoomToUser(googleMap, user);
         }
     }

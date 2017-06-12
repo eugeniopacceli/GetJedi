@@ -1,15 +1,11 @@
 package edu.getjedi.frontend.mobile;
 
-import android.app.Fragment;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import edu.getjedi.frontend.mobile.network.HTTPHandler;
 
@@ -26,7 +22,7 @@ public class DrawerMenuHandler implements ListView.OnItemClickListener {
     public DrawerMenuHandler(MainMapActivity context, ListView listView, String[] items){
         this.drawerList = listView;
         if(items == null){
-            items = new String[]{ StringTable.login, StringTable.register };
+            items = new String[]{ StringTable.LOGIN, StringTable.REGISTER, StringTable.FILTER_TITLE, StringTable.RAY_FILTER};
         }
         this.context = context;
         this.content = items;
@@ -39,12 +35,19 @@ public class DrawerMenuHandler implements ListView.OnItemClickListener {
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (content[position]){
-            case StringTable.login:
-                context.showLoginForm();
+            case StringTable.LOGIN:
+                context.getDialogFactory().getLoginDialog().show();
                 break;
-            case StringTable.register:
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(HTTPHandler.SERVER_URL+"/register"));
+            case StringTable.REGISTER:
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(HTTPHandler.SERVER_URL+"/REGISTER"));
                 context.startActivity(browserIntent);
+                break;
+            case StringTable.RAY_FILTER:
+                context.getDialogFactory().getRayFilterDialog().show();
+                break;
+            case StringTable.FILTER_TITLE:
+                context.getDialogFactory().getServicesFilterDialog().show();
+                break;
         }
     }
 }
