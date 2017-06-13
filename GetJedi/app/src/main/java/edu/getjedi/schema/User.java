@@ -6,14 +6,16 @@ import java.io.Serializable;
 
 public abstract class User implements Serializable{
     protected String id;
-    protected String name;
+    protected String firstName;
+    protected String lastName;
+    protected String username;
+    protected String email;
     protected LatLng coordinates;
-    protected String token;
 
-    public User(String id, String name, String token) {
+    public User(String id, String email, String username) {
         this.id = id;
-        this.name = name;
-        this.token = token;
+        this.email = email;
+        this.username = username;
     }
 
     public String getId() {
@@ -24,12 +26,12 @@ public abstract class User implements Serializable{
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setFirstName(String name) {
+        this.firstName = name;
     }
 
     public LatLng getCoordinates() {
@@ -40,11 +42,27 @@ public abstract class User implements Serializable{
         this.coordinates = coordinates;
     }
 
-    public String getToken() {
-        return token;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

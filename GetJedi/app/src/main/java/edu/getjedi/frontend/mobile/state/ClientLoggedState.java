@@ -1,5 +1,6 @@
 package edu.getjedi.frontend.mobile.state;
 
+import edu.getjedi.frontend.mobile.StringTable;
 import edu.getjedi.schema.Client;
 
 /**
@@ -9,8 +10,14 @@ import edu.getjedi.schema.Client;
 public class ClientLoggedState implements AppState{
     @Override
     public void performAction(AppContext context, Object action) {
-        if(context.getUser() == null){
-            context.setState(new BeginState());
+        if(action == null) {
+            if (context.getUser() == null) {
+                context.setState(new BeginState());
+            } else {
+                context.getScreen().setMenuItems(new String[]{"IM A CLIENT", StringTable.LOGOFF});
+            }
+        }else{
+
         }
     }
 }

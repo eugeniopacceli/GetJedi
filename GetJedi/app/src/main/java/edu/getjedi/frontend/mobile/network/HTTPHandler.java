@@ -1,32 +1,32 @@
 package edu.getjedi.frontend.mobile.network;
 
-import android.content.Context;
 import android.util.Log;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-
-import java.util.List;
+;
+import edu.getjedi.frontend.mobile.MainMapActivity;
 
 public class HTTPHandler implements Response.Listener, Response.ErrorListener {
     private static RequestQueue queue;
+    private MainMapActivity mainActivity;
     private static HTTPHandler httpHandler;
-    public static final String SERVER_URL = "http://45.55.209.101/";
+    public static final String SERVER_URL = "http://getjedipro.com";
 
-    private HTTPHandler(Context context){
+    private HTTPHandler(MainMapActivity context){
+        mainActivity = context;
         queue = Volley.newRequestQueue(context);
     }
 
-    public void makeRequest(List<String> paramsInOrder){
+    public void makeRequest(String[] paramsInOrder, RequestType method){
         QueryURLBuilder builder = new QueryURLBuilder(SERVER_URL);
         for(String e : paramsInOrder){
             builder.addParameter(e);
         }
-        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,builder.build(), null, this, this);
+        JsonArrayRequest request = new JsonArrayRequest(method.ordinal(),builder.build(), null, this, this);
         queue.add(request);
     }
 
@@ -37,10 +37,10 @@ public class HTTPHandler implements Response.Listener, Response.ErrorListener {
 
     @Override
     public void onResponse(Object response) {
-        Log.i("<--- RESPONSE --->",response.toString());
+        mainActivity.getAppContext().performAction(response);
     }
 
-    public static HTTPHandler getInstanceOf(Context context){
+    public static HTTPHandler getInstanceOf(MainMapActivity context){
         if(httpHandler == null){
             httpHandler = new HTTPHandler(context);
         }

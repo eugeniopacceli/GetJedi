@@ -32,6 +32,12 @@ public class Memory {
         return user;
     }
 
+    public static void clean(Context context){
+        if(hasFile(context)){
+            context.deleteFile(FILENAME);
+        }
+    }
+
     public static void save(Context context,User user){
         try {
             FileOutputStream outputFile = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);

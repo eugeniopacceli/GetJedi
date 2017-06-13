@@ -5,11 +5,11 @@ package edu.getjedi.schema;
  */
 
 public class UserFactory {
-    public static User create(String id, String name, String token, UserType type){
+    public User getUser(String id, String email, String username, UserType type){
         if(type == UserType.CLIENT) {
-            return new Client(id, name, token);
+            return new Client(id, email, username);
         }else{
-            return new Professional(id, name, token);
+            return new Professional(id, email, username);
         }
     }
 }

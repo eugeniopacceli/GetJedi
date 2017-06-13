@@ -23,7 +23,7 @@ public class UserLocationHandler implements LocationListener {
 
     public void zoomToUser(GoogleMap map,LatLng user){
         // Zoom in, animating the camera.
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(user,8));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(user,15));
     }
 
     public void onLocationChanged(Location location) {
@@ -57,6 +57,7 @@ public class UserLocationHandler implements LocationListener {
         if(userLocationHandler == null){
             userLocationHandler = new UserLocationHandler(mainScreen);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, userLocationHandler);
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, userLocationHandler);
         }
         return userLocationHandler;
     }

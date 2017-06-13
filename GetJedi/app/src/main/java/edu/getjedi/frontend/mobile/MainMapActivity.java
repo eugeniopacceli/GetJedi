@@ -1,23 +1,18 @@
 package edu.getjedi.frontend.mobile;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-
-import java.util.ArrayList;
 
 import edu.getjedi.frontend.mobile.io.Memory;
 import edu.getjedi.frontend.mobile.network.HTTPHandler;
@@ -30,7 +25,6 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     private DrawerLayout drawerLayout;
     private ListView listMenu;
     private AppContext appContext;
-    private DialogFactory dialogFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +37,6 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         // Set the list's click listener
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         listMenu = (ListView) findViewById(R.id.left_drawer);
-        dialogFactory = new DialogFactory(this);
     }
 
     private boolean hasLocationAndInternetPermissions() {
@@ -75,7 +68,6 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
             appContext.setUser(Memory.load(this));
         }
         appContext.performAction(null);
-        menuHandler = new DrawerMenuHandler(this, listMenu, null);
         if (!hasLocationAndInternetPermissions()) {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.INTERNET}, 10);
         }else {
@@ -98,6 +90,8 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         super.onStop();
         if(appContext.getUser() != null){
             Memory.save(this, appContext.getUser());
+        }else{
+            Memory.clean(this);
         }
     }
 
@@ -125,7 +119,31 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         return;
     }
 
-    public DialogFactory getDialogFactory() {
-        return dialogFactory;
+    public void setMenuItems(String[] items) {
+        menuHandler = new DrawerMenuHandler(this, listMenu, items);
+    }
+
+    public UserLocationHandler getLocationHandler() {
+        return locationHandler;
+    }
+
+    public HTTPHandler getHttpHandler() {
+        return httpHandler;
+    }
+
+    public DrawerMenuHandler getMenuHandler() {
+        return menuHandler;
+    }
+
+    public DrawerLayout getDrawerLayout() {
+        return drawerLayout;
+    }
+
+    public AppContext getAppContext() {
+        return appContext;
+    }
+
+    public ListView getListMenu() {
+        return listMenu;
     }
 }

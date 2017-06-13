@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import edu.getjedi.frontend.mobile.network.HTTPHandler;
+import edu.getjedi.frontend.mobile.state.BeginState;
 
 /**
  * Created by Administrador on 10/06/2017.
@@ -18,6 +19,7 @@ public class DrawerMenuHandler implements ListView.OnItemClickListener {
     private ListView drawerList;
     private MainMapActivity context;
     private String[] content;
+    private DialogFactory dialogFactory;
 
     public DrawerMenuHandler(MainMapActivity context, ListView listView, String[] items){
         this.drawerList = listView;
@@ -30,24 +32,29 @@ public class DrawerMenuHandler implements ListView.OnItemClickListener {
                 R.layout.menu_list, content));
         // Set the list's click listener
         drawerList.setOnItemClickListener(this);
+        dialogFactory = new DialogFactory();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (content[position]){
             case StringTable.LOGIN:
-                context.getDialogFactory().getLoginDialog().show();
+                dialogFactory.getDialog(DialogType.LOGIN, context, HTTPHandler.getInstanceOf(context)).show();
                 break;
             case StringTable.REGISTER:
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(HTTPHandler.SERVER_URL+"/REGISTER"));
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(HTTPHandler.SERVER_URL+"/register"));
                 context.startActivity(browserIntent);
                 break;
             case StringTable.RAY_FILTER:
-                context.getDialogFactory().getRayFilterDialog().show();
+
                 break;
             case StringTable.FILTER_TITLE:
-                context.getDialogFactory().getServicesFilterDialog().show();
+
                 break;
+            case StringTable.LOGOFF:
+                context.getAppContext().setUser(null);
+                context.getAppContext().setState(new BeginState());
+                context.getAppContext().performAction(null);
         }
     }
 }

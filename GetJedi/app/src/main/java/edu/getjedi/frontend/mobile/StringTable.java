@@ -17,5 +17,7 @@ public class StringTable {
     public static final String RAY_FILTER = "Raio de visão";
     public static final String OK = "Ok!";
     public static final String CANCEL = "cancelar";
+    public static final String USER_NOT_FOUND = "Usuário não encontrado para esses dados.";
+    public static final String LOGOFF = "Sair";
     public static final ArrayList<String> services = new ArrayList<>();
 }
