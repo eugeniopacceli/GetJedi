@@ -14,7 +14,7 @@ public class ProfessionalLoggedState implements AppState{
             if (context.getUser() == null) {
                 context.setState(new BeginState());
             } else {
-                context.getScreen().setMenuItems(new String[]{"IM A PRO", StringTable.LOGOFF});
+                context.getScreen().setMenuItems(new String[]{context.getUser().getFirstName() + " " + context.getUser().getLastName(), " ", StringTable.LOGOFF});
             }
         }else{
 

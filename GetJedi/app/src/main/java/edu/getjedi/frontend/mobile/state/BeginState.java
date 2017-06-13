@@ -49,6 +49,8 @@ public class BeginState implements AppState{
                             obj.getString("mail"),
                             obj.getString("username"),
                             UserType.values()[obj.getInt("userType")]);
+                    user.setFirstName(obj.getString("name"));
+                    user.setLastName(obj.getString("lastName"));
                     context.setUser(user);
                     context.setState(user instanceof Client ? new ClientLoggedState() : new ProfessionalLoggedState());
                     context.performAction(null);

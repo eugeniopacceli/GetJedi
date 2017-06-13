@@ -42,7 +42,7 @@ public class DrawerMenuHandler implements ListView.OnItemClickListener {
                 dialogFactory.getDialog(DialogType.LOGIN, context, HTTPHandler.getInstanceOf(context)).show();
                 break;
             case StringTable.REGISTER:
-                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(HTTPHandler.SERVER_URL+"/register"));
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(HTTPHandler.SERVER_URL));
                 context.startActivity(browserIntent);
                 break;
             case StringTable.RAY_FILTER:
