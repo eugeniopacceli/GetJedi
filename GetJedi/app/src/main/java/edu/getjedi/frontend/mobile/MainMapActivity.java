@@ -19,6 +19,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import edu.getjedi.frontend.mobile.io.Memory;
 import edu.getjedi.frontend.mobile.network.HTTPHandler;
 import edu.getjedi.frontend.mobile.state.AppContext;
+import edu.getjedi.frontend.mobile.state.ClientLoggedState;
 
 public class MainMapActivity extends FragmentActivity implements OnMapReadyCallback {
     private UserLocationHandler locationHandler;
@@ -27,6 +28,7 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     private DrawerLayout drawerLayout;
     private ListView listMenu;
     private AppContext appContext;
+    private GoogleMap googleMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +111,11 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
         locationHandler.setGoogleMap(googleMap);
+        if(this.getAppContext().getState() instanceof ClientLoggedState){
+            this.getAppContext().performAction(googleMap);
+        }
     }
 
     @Override
@@ -148,6 +154,14 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
 
     public ListView getListMenu() {
         return listMenu;
+    }
+
+    public GoogleMap getGoogleMap() {
+        return googleMap;
+    }
+
+    public void setGoogleMap(GoogleMap googleMap) {
+        this.googleMap = googleMap;
     }
 
     @Override

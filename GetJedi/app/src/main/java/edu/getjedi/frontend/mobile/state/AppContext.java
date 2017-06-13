@@ -11,12 +11,15 @@ public class AppContext {
     private User user;
     private AppState state;
     private static AppContext appContext = null;
+    private static final int UPDATE_INTERVAL_DEFAULT = 5000;
     private MainMapActivity screen;
+    private int updateInterval;
 
     private AppContext(MainMapActivity screen){
         user = null;
         setState(new BeginState());
         this.screen = screen;
+        this.updateInterval = UPDATE_INTERVAL_DEFAULT;
     }
 
     public void performAction(Object action){
@@ -48,5 +51,13 @@ public class AppContext {
 
     public MainMapActivity getScreen() {
         return screen;
+    }
+
+    public int getUpdateInterval() {
+        return updateInterval;
+    }
+
+    public void setUpdateInterval(int updateInterval) {
+        this.updateInterval = updateInterval;
     }
 }

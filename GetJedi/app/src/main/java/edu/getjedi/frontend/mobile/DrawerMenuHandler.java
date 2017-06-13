@@ -24,7 +24,7 @@ public class DrawerMenuHandler implements ListView.OnItemClickListener {
     public DrawerMenuHandler(MainMapActivity context, ListView listView, String[] items){
         this.drawerList = listView;
         if(items == null){
-            items = new String[]{ StringTable.LOGIN, StringTable.REGISTER, StringTable.FILTER_TITLE, StringTable.RAY_FILTER};
+            items = new String[]{ StringTable.APP_NAME , " " , StringTable.LOGIN, StringTable.REGISTER};
         }
         this.context = context;
         this.content = items;
