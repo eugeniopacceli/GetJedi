@@ -149,9 +149,7 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
             }
         });
         locationHandler.setGoogleMap(googleMap);
-        if(this.getAppContext().getState() instanceof ClientLoggedState){
-            this.getAppContext().performAction(googleMap);
-        }
+        this.getAppContext().performAction(googleMap);
     }
 
     @Override

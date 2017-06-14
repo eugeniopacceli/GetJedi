@@ -5,8 +5,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
@@ -18,10 +16,12 @@ public class UserLocationHandler implements LocationListener {
     private static GoogleMap googleMap;
     private static LocationManager locationManager;
     private static UserLocationHandler userLocationHandler;
+    private MainMapActivity screen;
     private Marker userMarker;
 
-    private UserLocationHandler(FragmentActivity mainScreen){
+    private UserLocationHandler(MainMapActivity mainScreen){
         locationManager = (LocationManager) mainScreen.getSystemService(Context.LOCATION_SERVICE);
+        screen = mainScreen;
     }
 
     public void zoomToUser(GoogleMap map,LatLng user){
@@ -32,6 +32,9 @@ public class UserLocationHandler implements LocationListener {
     public void onLocationChanged(Location location) {
         // Called when a new location is found by the network location provider.
         LatLng user = new LatLng(location.getLatitude(), location.getLongitude());
+        if(screen != null && screen.getAppContext().getUser() != null){
+            screen.getAppContext().getUser().setCoordinates(new LatLng(location.getLatitude(),location.getLongitude()));
+        }
         if(googleMap != null) {
             if(userMarker != null){
                 userMarker.remove();
@@ -58,7 +61,7 @@ public class UserLocationHandler implements LocationListener {
         this.googleMap = googleMap;
     }
 
-    public static UserLocationHandler getInstanceOf(FragmentActivity mainScreen) throws SecurityException{
+    public static UserLocationHandler getInstanceOf(MainMapActivity mainScreen) throws SecurityException{
         if(userLocationHandler == null){
             userLocationHandler = new UserLocationHandler(mainScreen);
             locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, userLocationHandler);

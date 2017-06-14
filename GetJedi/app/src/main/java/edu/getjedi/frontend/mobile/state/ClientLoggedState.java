@@ -87,8 +87,8 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
         timer.postDelayed(new Runnable() {
             @Override
             public void run() {
-                context.getScreen().getHttpHandler().makeRequest(new String[]{"services"}, RequestType.GET);
-                context.getScreen().getHttpHandler().makeRequest(new String[]{"users"}, RequestType.GET);
+                context.getScreen().getHttpHandler().makeRequestForArray(new String[]{"services"}, RequestType.GET);
+                context.getScreen().getHttpHandler().makeRequestForArray(new String[]{"users"}, RequestType.GET);
                 if (context.getState() instanceof ClientLoggedState) {
                     timer.postDelayed(this, context.getUpdateInterval());
                 }
@@ -104,7 +104,7 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
                 for (int j = 0; j < users.length(); j++) {
                     JSONObject user = users.getJSONObject(j);
                     if (service.getString("professionalId").equals(user.getString("_id"))){
-                        drapMarkerOnMap(Double.parseDouble(user.getString("latitude")),
+                        drawMarkerOnMap(Double.parseDouble(user.getString("latitude")),
                                 Double.parseDouble(user.getString("longitude")),
                                 service.getString("category"),
                                 service.getString("serviceName"),
@@ -128,7 +128,7 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
         }
     }
 
-    private void drapMarkerOnMap(double lat, double lng, String category, String name, String desc, String price, String username, String lastName, String email){
+    private void drawMarkerOnMap(double lat, double lng, String category, String name, String desc, String price, String username, String lastName, String email){
         if(map != null) {
             Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).
                     title(category + ": " + name).snippet(desc + "\nR$" + price + " (hora)+\n" + username + " " + lastName + "\n(" + email + ")")

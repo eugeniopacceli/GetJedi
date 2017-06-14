@@ -37,22 +37,25 @@ public class BeginState implements AppState{
             }
         }else{
             try {
-                JSONArray array = (JSONArray)action;
-                if(array.length() == 0){
-                    new DialogDecorator().getDialog(DialogType.LOGIN, context.getScreen(), HTTPHandler.getInstanceOf(context.getScreen())).show();
-                    Toast.makeText(context.getScreen().getApplicationContext(), StringTable.USER_NOT_FOUND,Toast.LENGTH_LONG).show();
-                }else {
-                    JSONObject obj = array.getJSONObject(0);
-                    UserFactory factory = new UserFactory();
-                    User user = factory.getUser(obj.getString("_id"),
-                            obj.getString("mail"),
-                            obj.getString("username"),
-                            UserType.values()[obj.getInt("userType")]);
-                    user.setFirstName(obj.getString("name"));
-                    user.setLastName(obj.getString("lastName"));
-                    context.setUser(user);
-                    context.setState(user instanceof Client ? new ClientLoggedState() : new ProfessionalLoggedState());
-                    context.performAction(null);
+                if(action != null && action instanceof JSONArray) {
+                    JSONArray array = (JSONArray) action;
+                    if (array.length() == 0) {
+                        new DialogDecorator().getDialog(DialogType.LOGIN, context.getScreen(), HTTPHandler.getInstanceOf(context.getScreen())).show();
+                        Toast.makeText(context.getScreen().getApplicationContext(), StringTable.USER_NOT_FOUND, Toast.LENGTH_LONG).show();
+                    } else if (array.length() == 1) {
+                        JSONObject obj = array.getJSONObject(0);
+                        UserFactory factory = new UserFactory();
+                        User user = factory.getUser(obj.getString("_id"),
+                                obj.getString("mail"),
+                                obj.getString("username"),
+                                UserType.values()[obj.getInt("userType")]);
+                        user.setFirstName(obj.getString("name"));
+                        user.setLastName(obj.getString("lastName"));
+                        context.setUser(user);
+                        context.setState(user instanceof Client ? new ClientLoggedState() : new ProfessionalLoggedState());
+                        context.performAction(null);
+                        context.performAction(context.getScreen().getGoogleMap());
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

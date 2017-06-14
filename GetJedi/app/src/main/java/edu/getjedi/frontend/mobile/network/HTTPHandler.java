@@ -6,6 +6,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 ;
 import edu.getjedi.frontend.mobile.MainMapActivity;
@@ -21,12 +22,21 @@ public class HTTPHandler implements Response.Listener, Response.ErrorListener {
         queue = Volley.newRequestQueue(context);
     }
 
-    public void makeRequest(String[] paramsInOrder, RequestType method){
+    public void makeRequestForArray(String[] paramsInOrder, RequestType method){
         QueryURLBuilder builder = new QueryURLBuilder(SERVER_URL);
         for(String e : paramsInOrder){
             builder.addParameter(e);
         }
         JsonArrayRequest request = new JsonArrayRequest(method.ordinal(),builder.build(), null, this, this);
+        queue.add(request);
+    }
+
+    public void makeRequestForObject(String[] paramsInOrder, RequestType method){
+        QueryURLBuilder builder = new QueryURLBuilder(SERVER_URL);
+        for(String e : paramsInOrder){
+            builder.addParameter(e);
+        }
+        JsonObjectRequest request = new JsonObjectRequest(method.ordinal(),builder.build(), null, this, this);
         queue.add(request);
     }
 

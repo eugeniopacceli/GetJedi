@@ -44,7 +44,7 @@ public class DialogDecorator {
                 .setPositiveButton(StringTable.OK, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
-                        connection.makeRequest(new String[]{"maillogin",login.getText().toString(),password.getText().toString()}, RequestType.GET);
+                        connection.makeRequestForArray(new String[]{"maillogin",login.getText().toString(),password.getText().toString()}, RequestType.GET);
                     }
                 })
                 .setNegativeButton(StringTable.CANCEL, new DialogInterface.OnClickListener() {
