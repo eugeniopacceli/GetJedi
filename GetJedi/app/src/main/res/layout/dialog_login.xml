@@ -2,6 +2,12 @@
     android:orientation="vertical"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
+    <ImageView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="center"
+        android:paddingTop="4dp"
+        android:src="@drawable/login" />
     <EditText
         android:id="@+id/username"
         android:inputType="textEmailAddress"

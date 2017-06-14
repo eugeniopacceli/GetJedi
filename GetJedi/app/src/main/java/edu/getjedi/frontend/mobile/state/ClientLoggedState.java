@@ -125,7 +125,8 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
                 JSONObject service = services.getJSONObject(i);
                 for (int j = 0; j < users.length(); j++) {
                     JSONObject user = users.getJSONObject(j);
-                    if (service.getString("professionalId").equals(user.getString("_id"))){
+                    if (service.getString("professionalId").equals(user.getString("_id")) && filterPrice(service.getInt("hourlyPrice"))
+                            && filterRay(user.getString("latitude"), user.getString("longitude"))){
                         drawMarkerOnMap(Double.parseDouble(user.getString("latitude")),
                                 Double.parseDouble(user.getString("longitude")),
                                 service.getString("category"),
@@ -142,6 +143,37 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
         }catch (JSONException e){
             e.printStackTrace();
         }
+    }
+
+    private boolean filterRay(String latitude, String longitude) {
+        try {
+            double radius;
+            double x0 = context.getUser().getCoordinates().latitude;
+            double y0 = context.getUser().getCoordinates().longitude;
+            double x1 = Double.parseDouble(latitude);
+            double y1 = Double.parseDouble(longitude);
+            radius = Double.parseDouble(this.rayFilter);
+
+            //Ratio for earth surface - Harvarsine Formula
+            double deglen = 110.25;
+            double x = x1 - x0;
+            double y = (y1 - y0) * Math.cos(x0);
+            double distance = deglen * Math.sqrt(x*x + y*y);
+
+            return ( distance <= radius);
+        }catch (Exception e){
+            return true;
+        }
+    }
+
+    private boolean filterPrice(int hourlyPrice) {
+        double priceFilter;
+        try {
+            priceFilter = Double.parseDouble(this.priceFilter);
+        }catch (Exception e){
+            priceFilter = Double.MAX_VALUE;
+        }
+        return hourlyPrice <= priceFilter;
     }
 
     private String[] findProfessionalAndServiceByEmail(String email){
