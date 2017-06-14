@@ -2,6 +2,8 @@ package edu.getjedi.frontend.mobile.network;
 
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -9,6 +11,10 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 ;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+
 import edu.getjedi.frontend.mobile.MainMapActivity;
 
 public class HTTPHandler implements Response.Listener, Response.ErrorListener {
@@ -22,21 +28,40 @@ public class HTTPHandler implements Response.Listener, Response.ErrorListener {
         queue = Volley.newRequestQueue(context);
     }
 
-    public void makeRequestForArray(String[] paramsInOrder, RequestType method){
+    public void makeRequestForArray(String[] paramsInOrder){
         QueryURLBuilder builder = new QueryURLBuilder(SERVER_URL);
         for(String e : paramsInOrder){
             builder.addParameter(e);
         }
-        JsonArrayRequest request = new JsonArrayRequest(method.ordinal(),builder.build(), null, this, this);
+        JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET,builder.build(), null, this, this);
         queue.add(request);
     }
 
-    public void makeRequestForObject(String[] paramsInOrder, RequestType method){
+    public void makeRequestForObject(String[] paramsInOrder){
         QueryURLBuilder builder = new QueryURLBuilder(SERVER_URL);
         for(String e : paramsInOrder){
             builder.addParameter(e);
         }
-        JsonObjectRequest request = new JsonObjectRequest(method.ordinal(),builder.build(), null, this, this);
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.GET,builder.build(), null, this, this);
+        queue.add(request);
+    }
+
+    public void makePOSTRequestForObject(String[] paramsInOrder, final HashMap<String, String> postParams){
+        QueryURLBuilder builder = new QueryURLBuilder(SERVER_URL);
+        for(String e : paramsInOrder){
+            builder.addParameter(e);
+        }
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST,builder.build(), null, this, this) {
+            @Override
+            public byte[] getBody(){
+                return new JSONObject(postParams).toString().getBytes();
+            }
+
+            @Override
+            public String getBodyContentType() {
+                return "application/json";
+            }
+        };
         queue.add(request);
     }
 

@@ -16,6 +16,7 @@ public class StringTable {
     public static final String USER_IN_MAP_DESC = "Detectamos que você está aqui.";
     public static final String FILTER_TITLE = "Serviços";
     public static final String OFFER_TITLE = "Ofertar serviços";
+    public static final String SHOW_TITLE = "Meus serviços";
     public static final String FILTER_CONFIRM = "Confirma";
     public static final String RAY_FILTER = "Raio de visão";
     public static final String OK = "OK";

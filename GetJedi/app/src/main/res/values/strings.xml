@@ -8,4 +8,10 @@
     <string name="raypicker">Raio limite</string>
     <string name="max_ray_km">Raio máximo (km):</string>
     <string name="max_price">Preço máximo (hora):</string>
+    <string name="categoria">Categoria:</string>
+    <string name="service_name">Nome do serviço:</string>
+    <string name="price_per_hour">Preço por hora:</string>
+    <string name="descricao">Descrição:</string>
+    <string name="confirm">Confirmar trabalho?</string>
+    <string name="feche_essa_janela_ao_terminar_o_trabalho">Feche essa janela ao terminar o trabalho</string>
 </resources>

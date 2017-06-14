@@ -17,7 +17,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import edu.getjedi.frontend.mobile.DialogDecorator;
+import edu.getjedi.frontend.mobile.DialogType;
 import edu.getjedi.frontend.mobile.StringTable;
 import edu.getjedi.frontend.mobile.network.RequestType;
 import edu.getjedi.schema.Client;
@@ -35,6 +38,7 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
     private JSONArray services;
     private JSONArray users;
     private ArrayList<Marker> markers;
+    private String choosenOne;
 
     @Override
     public void performAction(final AppContext context, Object action) {
@@ -54,7 +58,25 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
         } else if(action instanceof String[]){
             rayFilter = ((String[])action)[0];
             priceFilter = ((String[])action)[1];
+        } else if(action instanceof Boolean){
+            if(choosenOne != null){
+                sendJobRequest(context);
+            }
         }
+    }
+
+    private void sendJobRequest(AppContext context) {
+        String[] query = findProfessionalAndServiceByEmail(choosenOne);
+        HashMap<String,String> map = new HashMap<>();
+        map.put("clientId", context.getUser().getId());
+        map.put("professionalId", query[0]);
+        map.put("serviceId", query[1]);
+        map.put("startDate", "0");
+        map.put("endDate", "0");
+        map.put("jobStatus", "0");
+        map.put("clientRating", "5");
+        map.put("professionalRating", "5");
+        context.getScreen().getHttpHandler().makePOSTRequestForObject(new String[]{"createJob"}, map);
     }
 
     private void parseResponses(JSONArray action) {
@@ -63,7 +85,7 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
                 JSONObject obj = action.getJSONObject(0);
                 if (obj.has("username")) {
                     users = action;
-                } else {
+                } else if (obj.has("professionalId")){
                     services = action;
                 }
             }
@@ -87,8 +109,8 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
         timer.postDelayed(new Runnable() {
             @Override
             public void run() {
-                context.getScreen().getHttpHandler().makeRequestForArray(new String[]{"services"}, RequestType.GET);
-                context.getScreen().getHttpHandler().makeRequestForArray(new String[]{"users"}, RequestType.GET);
+                context.getScreen().getHttpHandler().makeRequestForArray(new String[]{"services"});
+                context.getScreen().getHttpHandler().makeRequestForArray(new String[]{"users"});
                 if (context.getState() instanceof ClientLoggedState) {
                     timer.postDelayed(this, context.getUpdateInterval());
                 }
@@ -122,6 +144,31 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
         }
     }
 
+    private String[] findProfessionalAndServiceByEmail(String email){
+        String[] results = new String[2];
+        results[0] = "";
+        results[1] = "";
+        try {
+            for (int j = 0; j < users.length(); j++) {
+                JSONObject user = users.getJSONObject(j);
+                if (user.getString("mail").equals(email)) {
+                    results[0] = user.getString("_id");
+                    break;
+                }
+            }
+            for (int j = 0; j < services.length(); j++) {
+                JSONObject service = services.getJSONObject(j);
+                if (service.getString("professionalId").equals(results[0])) {
+                    results[1] = service.getString("_id");
+                    break;
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return results;
+    }
+
     private void cleanMarkers(){
         for(Marker e : markers){
             e.remove();
@@ -131,7 +178,7 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
     private void drawMarkerOnMap(double lat, double lng, String category, String name, String desc, String price, String username, String lastName, String email){
         if(map != null) {
             Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).
-                    title(category + ": " + name).snippet(desc + "\nR$" + price + " (hora)+\n" + username + " " + lastName + "\n(" + email + ")")
+                    title(category + ": " + name).snippet(desc + "\nR$" + price + " (hora)\n" + username + " " + lastName + "\n" + email)
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED)));
             markers.add(marker);
         }
@@ -140,5 +187,9 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
     @Override
     public void onInfoWindowClick(Marker marker) {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),15));
+        DialogDecorator dialogDecorator = new DialogDecorator();
+        dialogDecorator.getDialog(DialogType.CONFIRM_JOB, context.getScreen(), context.getScreen().getHttpHandler()).show();
+        String[] snippetLines = marker.getSnippet().split("\n");
+        choosenOne = snippetLines[snippetLines.length - 1];
     }
 }

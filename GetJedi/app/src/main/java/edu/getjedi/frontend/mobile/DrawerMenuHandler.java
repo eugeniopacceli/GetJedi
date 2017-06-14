@@ -51,6 +51,12 @@ public class DrawerMenuHandler implements ListView.OnItemClickListener {
             case StringTable.FILTER_TITLE:
                 dialogDecorator.getDialog(DialogType.FILTER, context, HTTPHandler.getInstanceOf(context)).show();
                 break;
+            case StringTable.SHOW_TITLE:
+
+                break;
+            case StringTable.OFFER_TITLE:
+                dialogDecorator.getDialog(DialogType.SERVICES, context, HTTPHandler.getInstanceOf(context)).show();
+                break;
             case StringTable.LOGOFF:
                 context.getAppContext().setUser(null);
                 context.getAppContext().setState(new BeginState());

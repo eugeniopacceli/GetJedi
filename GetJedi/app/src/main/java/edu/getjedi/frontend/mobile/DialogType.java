@@ -7,5 +7,6 @@ package edu.getjedi.frontend.mobile;
 public enum DialogType {
     LOGIN,
     FILTER,
-    SERVICES
+    SERVICES,
+    CONFIRM_JOB
 }
