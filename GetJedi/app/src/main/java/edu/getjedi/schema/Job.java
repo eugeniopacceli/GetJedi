@@ -5,6 +5,7 @@ package edu.getjedi.schema;
  */
 
 public class Job {
+    private String id;
     private String clientId;
     private String professionalId;
     private String serviceId;
@@ -40,5 +41,13 @@ public class Job {
 
     public void setOpen(boolean open) {
         this.open = open;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

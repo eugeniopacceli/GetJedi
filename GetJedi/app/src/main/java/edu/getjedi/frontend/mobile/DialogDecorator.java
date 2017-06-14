@@ -26,6 +26,7 @@ public class DialogDecorator {
             case FILTER: return getFilterDialog(context, connection);
             case SERVICES: return getServiceCreateDialog(context, connection);
             case CONFIRM_JOB: return getConfirmJobDialog(context, connection);
+            case PROGRESS: return getJobProgressDialog(context,connection);
         }
         return null;
     }
@@ -43,11 +44,6 @@ public class DialogDecorator {
                 .setPositiveButton(StringTable.OK, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         context.getAppContext().performAction(new Boolean(false));
-                    }
-                })
-                .setNegativeButton(StringTable.CANCEL, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-
                     }
                 });
         // Create the AlertDialog object and return it

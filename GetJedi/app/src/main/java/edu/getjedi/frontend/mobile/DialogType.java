@@ -8,5 +8,6 @@ public enum DialogType {
     LOGIN,
     FILTER,
     SERVICES,
+    PROGRESS,
     CONFIRM_JOB
 }

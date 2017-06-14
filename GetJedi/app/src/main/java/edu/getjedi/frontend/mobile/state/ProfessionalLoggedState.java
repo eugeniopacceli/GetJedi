@@ -18,6 +18,7 @@ import edu.getjedi.frontend.mobile.MainMapActivity;
 import edu.getjedi.frontend.mobile.StringTable;
 import edu.getjedi.frontend.mobile.network.RequestType;
 import edu.getjedi.schema.Client;
+import edu.getjedi.schema.Job;
 import edu.getjedi.schema.User;
 
 /**
@@ -29,6 +30,7 @@ public class ProfessionalLoggedState implements AppState{
     private User user;
     private GoogleMap map;
     private AppContext context;
+    private Job currentJob;
 
     @Override
     public void performAction(final AppContext context, Object action) {
@@ -49,16 +51,24 @@ public class ProfessionalLoggedState implements AppState{
             DialogDecorator dialog = new DialogDecorator();
             try {
                 if(jobs.length() > 0 && jobs.getJSONObject(0).has("jobStatus") && jobs.getJSONObject(0).has("clientId")){
-                    for (int j = 0; j < jobs.length(); j++) {
-                        JSONObject job = jobs.getJSONObject(j);
+                    //for (int j = 0; j < jobs.length(); j++) {
+                        JSONObject job = jobs.getJSONObject(0);
                         dialog.getDialog(DialogType.CONFIRM_JOB, context.getScreen(), context.getScreen().getHttpHandler()).show();
-                    }
+                        currentJob = new Job();
+                        currentJob.setId(job.getString("_id"));
+                    //}
                 }
             }catch (Exception e){
                 e.printStackTrace();
             }
         } else if (action instanceof Boolean){
-
+            if(((Boolean)action).booleanValue()) {
+                DialogDecorator dialog = new DialogDecorator();
+                dialog.getDialog(DialogType.PROGRESS, context.getScreen(), context.getScreen().getHttpHandler()).show();
+                context.getScreen().getHttpHandler().makeRequestForObject(new String[]{"updateJobStatus", currentJob.getId(), "1"});
+            }else{
+                context.getScreen().getHttpHandler().makeRequestForObject(new String[]{"updateJobStatus", currentJob.getId(), "2"});
+            }
         }
     }
 
