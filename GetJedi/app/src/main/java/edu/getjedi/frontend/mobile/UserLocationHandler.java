@@ -11,12 +11,14 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class UserLocationHandler implements LocationListener {
     private static GoogleMap googleMap;
     private static LocationManager locationManager;
     private static UserLocationHandler userLocationHandler;
+    private Marker userMarker;
 
     private UserLocationHandler(FragmentActivity mainScreen){
         locationManager = (LocationManager) mainScreen.getSystemService(Context.LOCATION_SERVICE);
@@ -31,8 +33,10 @@ public class UserLocationHandler implements LocationListener {
         // Called when a new location is found by the network location provider.
         LatLng user = new LatLng(location.getLatitude(), location.getLongitude());
         if(googleMap != null) {
-            googleMap.clear();
-            googleMap.addMarker(new MarkerOptions().position(user).title(StringTable.USER_IN_MAP).snippet(StringTable.USER_IN_MAP_DESC).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
+            if(userMarker != null){
+                userMarker.remove();
+            }
+            userMarker = googleMap.addMarker(new MarkerOptions().position(user).title(StringTable.USER_IN_MAP).snippet(StringTable.USER_IN_MAP_DESC).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE)));
             zoomToUser(googleMap, user);
         }
     }

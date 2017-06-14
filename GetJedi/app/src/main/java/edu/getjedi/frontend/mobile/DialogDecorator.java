@@ -1,9 +1,7 @@
 package edu.getjedi.frontend.mobile;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -17,21 +15,21 @@ import edu.getjedi.frontend.mobile.network.RequestType;
  * Created by Administrador on 12/06/2017.
  */
 
-public class DialogFactory {
+public class DialogDecorator {
 
-    public DialogFactory(){
+    public DialogDecorator(){
     }
 
-    public AlertDialog getDialog(DialogType type,Activity context, HTTPHandler connection){
+    public AlertDialog getDialog(DialogType type,MainMapActivity context, HTTPHandler connection){
         switch (type){
             case LOGIN: return getLoginDialog(context, connection);
-            case FILTER: return getRayFilterDialog(context, connection);
+            case FILTER: return getFilterDialog(context, connection);
             case SERVICES: return getServicesFilterDialog(context, connection);
         }
         return null;
     }
 
-    private AlertDialog getLoginDialog(Activity context, final HTTPHandler connection){
+    private AlertDialog getLoginDialog(MainMapActivity context, final HTTPHandler connection){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         // Get the layout inflater
         LayoutInflater inflater = context.getLayoutInflater();
@@ -56,18 +54,22 @@ public class DialogFactory {
         return builder.create();
     }
 
-    private AlertDialog getRayFilterDialog(Activity context, HTTPHandler connection){
+    private AlertDialog getFilterDialog(final MainMapActivity context, final HTTPHandler connection){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         // Get the layout inflater
         LayoutInflater inflater = context.getLayoutInflater();
+        View layout = inflater.inflate(R.layout.filter_form, null);
+        final EditText ray = (EditText)layout.findViewById(R.id.maxRayText);
+        final EditText price = (EditText) layout.findViewById(R.id.maxPriceText);
 
         // Inflate and set the layout for the dialog
         // Pass null as the parent view because its going in the dialog layout
-        builder.setView(inflater.inflate(R.layout.ray_form, null))
+        builder.setView(layout)
                 // Add action buttons
                 .setPositiveButton(StringTable.OK, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int id) {
+                        context.getAppContext().performAction(new String[]{ray.getText().toString(), price.getText().toString()});
                     }
                 })
                 .setNegativeButton(StringTable.CANCEL, new DialogInterface.OnClickListener() {
@@ -77,7 +79,7 @@ public class DialogFactory {
         return builder.create();
     }
 
-    private AlertDialog getServicesFilterDialog(Activity context, HTTPHandler connection){
+    private AlertDialog getServicesFilterDialog(MainMapActivity context, HTTPHandler connection){
         final ArrayList<String> mSelectedItems = new ArrayList();  // Where we track the selected items
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         StringTable.services.add("ok");

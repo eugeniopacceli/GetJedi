@@ -19,7 +19,7 @@ public class DrawerMenuHandler implements ListView.OnItemClickListener {
     private ListView drawerList;
     private MainMapActivity context;
     private String[] content;
-    private DialogFactory dialogFactory;
+    private DialogDecorator dialogDecorator;
 
     public DrawerMenuHandler(MainMapActivity context, ListView listView, String[] items){
         this.drawerList = listView;
@@ -32,14 +32,14 @@ public class DrawerMenuHandler implements ListView.OnItemClickListener {
                 R.layout.menu_list, content));
         // Set the list's click listener
         drawerList.setOnItemClickListener(this);
-        dialogFactory = new DialogFactory();
+        dialogDecorator = new DialogDecorator();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (content[position]){
             case StringTable.LOGIN:
-                dialogFactory.getDialog(DialogType.LOGIN, context, HTTPHandler.getInstanceOf(context)).show();
+                dialogDecorator.getDialog(DialogType.LOGIN, context, HTTPHandler.getInstanceOf(context)).show();
                 break;
             case StringTable.REGISTER:
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(HTTPHandler.SERVER_URL));
@@ -49,7 +49,7 @@ public class DrawerMenuHandler implements ListView.OnItemClickListener {
 
                 break;
             case StringTable.FILTER_TITLE:
-
+                dialogDecorator.getDialog(DialogType.FILTER, context, HTTPHandler.getInstanceOf(context)).show();
                 break;
             case StringTable.LOGOFF:
                 context.getAppContext().setUser(null);

@@ -6,4 +6,6 @@
     <string name="login">Login</string>
     <string name="cancel">Cancelar</string>
     <string name="raypicker">Raio limite</string>
+    <string name="max_ray_km">Raio máximo (km):</string>
+    <string name="max_price">Preço máximo (hora):</string>
 </resources>

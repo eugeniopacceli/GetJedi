@@ -1,13 +1,12 @@
 package edu.getjedi.frontend.mobile.state;
 
-import android.util.Log;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import edu.getjedi.frontend.mobile.DialogFactory;
+import edu.getjedi.frontend.mobile.DialogDecorator;
 import edu.getjedi.frontend.mobile.DialogType;
 import edu.getjedi.frontend.mobile.StringTable;
 import edu.getjedi.frontend.mobile.network.HTTPHandler;
@@ -40,7 +39,7 @@ public class BeginState implements AppState{
             try {
                 JSONArray array = (JSONArray)action;
                 if(array.length() == 0){
-                    new DialogFactory().getDialog(DialogType.LOGIN, context.getScreen(), HTTPHandler.getInstanceOf(context.getScreen())).show();
+                    new DialogDecorator().getDialog(DialogType.LOGIN, context.getScreen(), HTTPHandler.getInstanceOf(context.getScreen())).show();
                     Toast.makeText(context.getScreen().getApplicationContext(), StringTable.USER_NOT_FOUND,Toast.LENGTH_LONG).show();
                 }else {
                     JSONObject obj = array.getJSONObject(0);
