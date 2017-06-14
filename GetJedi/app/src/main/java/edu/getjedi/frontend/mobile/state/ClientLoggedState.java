@@ -220,8 +220,11 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
     public void onInfoWindowClick(Marker marker) {
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),15));
         DialogDecorator dialogDecorator = new DialogDecorator();
-        dialogDecorator.getDialog(DialogType.CONFIRM_JOB, context.getScreen(), context.getScreen().getHttpHandler()).show();
         String[] snippetLines = marker.getSnippet().split("\n");
         choosenOne = snippetLines[snippetLines.length - 1];
+        if(choosenOne.length() > 2) {
+            dialogDecorator.getDialog(DialogType.CONFIRM_JOB, context.getScreen(), context.getScreen().getHttpHandler()).show();
+        }
+
     }
 }
