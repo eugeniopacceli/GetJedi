@@ -1,9 +1,9 @@
 package edu.getjedi.frontend.mobile.network;
 
 /**
- * Created by Administrador on 11/06/2017.
+ * A Query URL builder for our service, which adds GET parameters to the URL and returns the full path
+ * at build(). This and QueryURL implements the Builder pattern.
  */
-
 public class QueryURLBuilder {
     private QueryURL queryUrl;
 

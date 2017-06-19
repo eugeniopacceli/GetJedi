@@ -1,9 +1,8 @@
 package edu.getjedi.frontend.mobile.state;
 
 /**
- * Created by Administrador on 11/06/2017.
+ * Defines the method through which the application will send inputs to each State pattern states.
  */
-
 public interface AppState {
     public void performAction(AppContext context, Object action);
 }

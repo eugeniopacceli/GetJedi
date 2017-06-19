@@ -7,20 +7,28 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
+import edu.getjedi.frontend.mobile.network.HTTPHandler;
 import edu.getjedi.schema.User;
 
 /**
- * Created by Administrador on 11/06/2017.
+ * The Memory singleton. Used to read and write User files to the system. Needs a Context, to provide to the
+ * Android file API. This class is used when the User exits and enters the application, to persist it's login
+ * credentials.
  */
-
 public class Memory {
     public static String FILENAME = "user.data";
+    private static Memory memory;
+    private Context context;
 
-    public static boolean hasFile(Context context){
+    private Memory(Context context){
+        this.context = context;
+    }
+
+    public boolean hasFile(){
         return context.fileList().length > 0;
     }
 
-    public static User load(Context context){
+    public User load(){
         User user = null;
         try {
             FileInputStream inputFile = context.openFileInput(FILENAME);
@@ -32,13 +40,13 @@ public class Memory {
         return user;
     }
 
-    public static void clean(Context context){
-        if(hasFile(context)){
+    public void clean(){
+        if(hasFile()){
             context.deleteFile(FILENAME);
         }
     }
 
-    public static void save(Context context,User user){
+    public void save(User user){
         try {
             FileOutputStream outputFile = context.openFileOutput(FILENAME, Context.MODE_PRIVATE);
             ObjectOutputStream outputObject = new ObjectOutputStream(outputFile);
@@ -46,5 +54,12 @@ public class Memory {
             outputObject.close();
         }catch (Exception e){
         }
+    }
+
+    public static Memory getInstanceOf(Context context){
+        if(memory == null){
+            memory = new Memory(context);
+        }
+        return memory;
     }
 }

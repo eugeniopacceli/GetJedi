@@ -4,14 +4,14 @@ import edu.getjedi.frontend.mobile.MainMapActivity;
 import edu.getjedi.schema.User;
 
 /**
- * Created by Administrador on 11/06/2017.
+ * The State pattern Context, also a Singleton.
  */
-
 public class AppContext {
     private User user;
     private AppState state;
     private static AppContext appContext = null;
-    private static final int UPDATE_INTERVAL_DEFAULT = 5000;
+    private static final int UPDATE_INTERVAL_DEFAULT = 5000; // User location updates to the server
+                                                             // and job queries frequency.
     private MainMapActivity screen;
     private int updateInterval;
 

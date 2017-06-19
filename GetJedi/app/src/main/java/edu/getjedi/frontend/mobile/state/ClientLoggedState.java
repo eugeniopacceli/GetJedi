@@ -26,9 +26,9 @@ import edu.getjedi.frontend.mobile.network.RequestType;
 import edu.getjedi.schema.Client;
 
 /**
- * Created by Administrador on 11/06/2017.
+ * State of the application when a client is logged.
+ * Also a Google Map event handler, as the client user interacts with the map requesting services.
  */
-
 public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickListener{
     private Handler timer;
     private String rayFilter;
@@ -42,29 +42,33 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
 
     @Override
     public void performAction(final AppContext context, Object action) {
-        if (action == null) {
+        if (action == null) { // Verifies if user is still logged, this is called when the application begins or is resumed
             if (context.getUser() == null) {
                 context.setState(new BeginState());
             } else {
                 init(context);
             }
-        } else if (action instanceof GoogleMap){
+        } else if (action instanceof GoogleMap){ // Received a working Google Map instance to be used.
             initMap((GoogleMap) action);
-        } else if(action instanceof JSONArray){
+        } else if(action instanceof JSONArray){ // Receives the service offers nearby and professionals offering them.
             parseResponses((JSONArray) action);
             if(users != null && services != null){
-                updateMap();
+                updateMap(); // Updates the map
             }
-        } else if(action instanceof String[]){
+        } else if(action instanceof String[]){ // User has changed service filter values.
             rayFilter = ((String[])action)[0];
             priceFilter = ((String[])action)[1];
-        } else if(action instanceof Boolean){
+        } else if(action instanceof Boolean){ // User has prompted a service.
             if(choosenOne != null){
                 sendJobRequest(context);
             }
         }
     }
 
+    /**
+     * Dispatches a service request to the server, which will inform a professional of this user desire
+     * to be a client.
+     */
     private void sendJobRequest(AppContext context) {
         String[] query = findProfessionalAndServiceByEmail(choosenOne);
         HashMap<String,String> map = new HashMap<>();
@@ -79,6 +83,10 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
         context.getScreen().getHttpHandler().makePOSTRequestForObject(new String[]{"createJob"}, map);
     }
 
+    /**
+     * Verifies if the server sent the nearby services or nearby professionals, and stores them in memory,
+     * to be represented in the map for the user to navigate.
+     */
     private void parseResponses(JSONArray action) {
         try {
             if(action.length() > 0) {
@@ -94,11 +102,19 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
         }
     }
 
+    /**
+     * Sets the map to send clicks to this class.
+     */
     private void initMap(GoogleMap action) {
         map = action;
         map.setOnInfoWindowClickListener(this);
     }
 
+    /**
+     * Initializes this state.
+     * For every context.getUpdateInterval(), queries the server for services and professionals nearby.
+     * Changes the left menu content to show the options available for a Client.
+     */
     private void init(final AppContext context) {
         context.getScreen().setMenuItems(new String[]{context.getUser().getFirstName() + " " + context.getUser().getLastName(), StringTable.CLIENT, " ", StringTable.FILTER_TITLE, StringTable.LOGOFF});
         this.context = context;
@@ -118,6 +134,10 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
         }, context.getUpdateInterval());
     }
 
+    /**
+     * Draws into the Google Map all the services makers, and populate them with service and professional information.
+     * Called for each map update.
+     */
     private void updateMap() {
         cleanMarkers();
         try {
@@ -145,6 +165,9 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
         }
     }
 
+    /**
+     * Applies the ray filter for updateMap(), returning true if the service passes the maximum ray requirement.
+     */
     private boolean filterRay(String latitude, String longitude) {
         try {
             double radius;
@@ -166,6 +189,9 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
         }
     }
 
+    /**
+     * Applies the price filter for updateMap(), returning true if the service passes the maximum price requirement.
+     */
     private boolean filterPrice(int hourlyPrice) {
         double priceFilter;
         try {
@@ -176,6 +202,9 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
         return hourlyPrice <= priceFilter;
     }
 
+    /**
+     * Returns a String array with the professional id for a email into the position 0, and the service it offers into position 1
+     */
     private String[] findProfessionalAndServiceByEmail(String email){
         String[] results = new String[2];
         results[0] = "";
@@ -207,6 +236,9 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
         }
     }
 
+    /**
+     * Draws a marker on the map and builds it's description window.
+     */
     private void drawMarkerOnMap(double lat, double lng, String category, String name, String desc, String price, String username, String lastName, String email){
         if(map != null) {
             Marker marker = map.addMarker(new MarkerOptions().position(new LatLng(lat,lng)).
@@ -216,13 +248,17 @@ public class ClientLoggedState implements AppState, GoogleMap.OnInfoWindowClickL
         }
     }
 
+    /**
+     * Handles user map clicks.
+     */
     @Override
     public void onInfoWindowClick(Marker marker) {
-        map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),15));
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(),15)); // Move to clicked service marker
         DialogDecorator dialogDecorator = new DialogDecorator();
         String[] snippetLines = marker.getSnippet().split("\n");
         choosenOne = snippetLines[snippetLines.length - 1];
         if(choosenOne.length() > 2) {
+            // Prompts user for confirmation
             dialogDecorator.getDialog(DialogType.CONFIRM_JOB, context.getScreen(), context.getScreen().getHttpHandler()).show();
         }
 

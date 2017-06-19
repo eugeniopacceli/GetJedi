@@ -1,9 +1,8 @@
 package edu.getjedi.schema;
 
 /**
- * Created by Administrador on 14/06/2017.
+ * The Service class represents a professional activity being offered by a professional.
  */
-
 public class Service {
     private String professionalId;
     private String category;

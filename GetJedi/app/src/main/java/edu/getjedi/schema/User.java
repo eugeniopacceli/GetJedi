@@ -4,6 +4,11 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.io.Serializable;
 
+/**
+ * The User class represents a user, which can be a professional or a client. An object of this
+ * class is saved to the Android's internal file system memory when the user is logged and exiting
+ * the application.
+ */
 public abstract class User implements Serializable{
     protected String id;
     protected String firstName;

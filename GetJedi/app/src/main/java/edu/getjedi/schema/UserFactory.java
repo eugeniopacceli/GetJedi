@@ -1,9 +1,8 @@
 package edu.getjedi.schema;
 
 /**
- * Created by Administrador on 10/06/2017.
+ * A factory to provide a instance of User according to it's type.
  */
-
 public class UserFactory {
     public User getUser(String id, String email, String username, UserType type){
         if(type == UserType.CLIENT) {

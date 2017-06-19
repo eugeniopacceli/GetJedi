@@ -6,15 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
-import java.util.ArrayList;
-
 import edu.getjedi.frontend.mobile.network.HTTPHandler;
-import edu.getjedi.frontend.mobile.network.RequestType;
 
 /**
- * Created by Administrador on 12/06/2017.
+ * A Decorator for the Android Dialogs API. With  a value, returns a fully built AlertDialog ready to
+ * be used through show().
+ *
+ * Dialogs's results are set to be passed to this application state machine classes.
+ *
+ * HTTPHandler is needed for possible HTTP communcations.
  */
-
 public class DialogDecorator {
 
     public DialogDecorator(){

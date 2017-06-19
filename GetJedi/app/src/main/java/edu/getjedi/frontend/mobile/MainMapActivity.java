@@ -25,8 +25,10 @@ import com.google.android.gms.maps.model.Marker;
 import edu.getjedi.frontend.mobile.io.Memory;
 import edu.getjedi.frontend.mobile.network.HTTPHandler;
 import edu.getjedi.frontend.mobile.state.AppContext;
-import edu.getjedi.frontend.mobile.state.ClientLoggedState;
 
+/**
+ * Application entry point and main interface controller.
+ */
 public class MainMapActivity extends FragmentActivity implements OnMapReadyCallback {
     private UserLocationHandler locationHandler;
     private HTTPHandler httpHandler;
@@ -35,10 +37,15 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     private ListView listMenu;
     private AppContext appContext;
     private GoogleMap googleMap;
+    private Memory memory;
 
+    /**
+     * Application entry point
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // Forces vertical orientation always
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -48,14 +55,22 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         // Set the list's click listener
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         listMenu = (ListView) findViewById(R.id.left_drawer);
+        memory = Memory.getInstanceOf(this);
     }
 
+    /**
+     * Returns true if the user has granted this app all the required permissions for it's proper execution.
+     */
     private boolean hasLocationAndInternetPermissions() {
         return ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED;
     }
 
+    /**
+     * Initializes the Location Handler, for the Android Location API, and HTTP Handler, which deals with
+     * the Volley API (HTTP requests).
+     */
     private void initializeSensorsAccess(){
         try {
             // Acquire a reference to the system Location Manager
@@ -67,16 +82,22 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         }
     }
 
+    /**
+     * Programmatically reveals the Drawer menu (used by the states objects).
+     */
     public void revealDrawer(){
         drawerLayout.openDrawer(Gravity.LEFT);
     }
 
+    /**
+     * When the application starts or returns from background.
+     */
     @Override
     protected void onStart(){
         super.onStart();
         appContext = AppContext.getInstanceOf(this);
-        if(Memory.hasFile(this)){
-            appContext.setUser(Memory.load(this));
+        if(memory.hasFile()){
+            appContext.setUser(memory.load());
         }
         appContext.performAction(null);
         if (!hasLocationAndInternetPermissions()) {
@@ -96,21 +117,23 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
         super.onResume();
     }
 
+    /**
+     * Application sent to background or is closing.
+     */
     @Override
     protected void onStop(){
         super.onStop();
         if(appContext.getUser() != null){
-            Memory.save(this, appContext.getUser());
+            memory.save(appContext.getUser());
         }else{
-            Memory.clean(this);
+            memory.clean();
         }
     }
 
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
+     * This is where we can add markers or lines, add listeners or move the camera.
      * If Google Play services is not installed on the device, the user will be prompted to install
      * it inside the SupportMapFragment. This method will only be triggered once the user has
      * installed Google Play services and returned to the app.
@@ -148,10 +171,14 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
                 return info;
             }
         });
-        locationHandler.setGoogleMap(googleMap);
-        this.getAppContext().performAction(googleMap);
+        locationHandler.setGoogleMap(googleMap); /** Send the map to the location handler */
+        this.getAppContext().performAction(googleMap); /** Flags to the state object that the map is ready to use */
     }
 
+    /**
+     * User has responded to the permission request dialog, either allowing or denying the necessary
+     * permissions needed to the app's correct execution.
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         if( grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -165,6 +192,8 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     public void setMenuItems(String[] items) {
         menuHandler = new DrawerMenuHandler(this, listMenu, items);
     }
+
+    /** Getters and setters */
 
     public UserLocationHandler getLocationHandler() {
         return locationHandler;
@@ -201,6 +230,5 @@ public class MainMapActivity extends FragmentActivity implements OnMapReadyCallb
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        //here you can handle orientation change
     }
 }

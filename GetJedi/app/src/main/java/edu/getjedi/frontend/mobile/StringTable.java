@@ -1,11 +1,8 @@
 package edu.getjedi.frontend.mobile;
 
-import java.util.ArrayList;
-
 /**
- * Created by Administrador on 11/06/2017.
+ * Global string table.
  */
-
 public class StringTable {
     public static final String APP_NAME = " getJedi";
     public static final String LOGIN = "Login";
@@ -25,5 +22,4 @@ public class StringTable {
     public static final String LOGOFF = "Logout";
     public static final String CLIENT = "(cliente)";
     public static final String PROFESSIONAL = "(profissional)";
-    public static final ArrayList<String> services = new ArrayList<>();
 }

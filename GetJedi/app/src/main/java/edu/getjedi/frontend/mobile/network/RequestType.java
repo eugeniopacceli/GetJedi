@@ -1,9 +1,8 @@
 package edu.getjedi.frontend.mobile.network;
 
 /**
- * Created by Administrador on 13/06/2017.
+ * A HTTP request type enum representing GET and POST according to the Volley's specification (0 and 1).
  */
-
 public enum RequestType {
     GET,
     POST

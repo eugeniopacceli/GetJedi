@@ -1,9 +1,8 @@
 package edu.getjedi.frontend.mobile;
 
 /**
- * Created by Administrador on 13/06/2017.
+ * The possible Dialogs provided by DialogDecorator.
  */
-
 public enum DialogType {
     LOGIN,
     FILTER,

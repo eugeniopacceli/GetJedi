@@ -12,6 +12,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+/**
+ * Singleton responsible for handling GPS updates from the Android Location API.
+ */
 public class UserLocationHandler implements LocationListener {
     private static GoogleMap googleMap;
     private static LocationManager locationManager;

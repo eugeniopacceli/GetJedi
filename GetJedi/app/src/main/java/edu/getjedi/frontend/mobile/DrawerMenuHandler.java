@@ -11,9 +11,8 @@ import edu.getjedi.frontend.mobile.network.HTTPHandler;
 import edu.getjedi.frontend.mobile.state.BeginState;
 
 /**
- * Created by Administrador on 10/06/2017.
+ * The DrawerMenu controller and event handler.
  */
-
 public class DrawerMenuHandler implements ListView.OnItemClickListener {
 
     private ListView drawerList;
@@ -28,6 +27,8 @@ public class DrawerMenuHandler implements ListView.OnItemClickListener {
         }
         this.context = context;
         this.content = items;
+        /** Draws the list to the Drawer Menu on screen with the items from the array
+         *  and using the menu_list template. */
         drawerList.setAdapter(new ArrayAdapter<String>(context,
                 R.layout.menu_list, content));
         // Set the list's click listener
@@ -35,6 +36,10 @@ public class DrawerMenuHandler implements ListView.OnItemClickListener {
         dialogDecorator = new DialogDecorator();
     }
 
+    /**
+     * The onItemClick returns the position of the content array for the object which it's
+     * representation was clicked on the interface by the user.
+     */
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         switch (content[position]){

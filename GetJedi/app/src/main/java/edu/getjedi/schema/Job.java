@@ -1,9 +1,9 @@
 package edu.getjedi.schema;
 
 /**
- * Created by Administrador on 14/06/2017.
+ * The Job class represents a job in our application schema, which is a service perform between
+ * a client and a professional.
  */
-
 public class Job {
     private String id;
     private String clientId;

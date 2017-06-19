@@ -22,9 +22,8 @@ import edu.getjedi.schema.Job;
 import edu.getjedi.schema.User;
 
 /**
- * Created by Administrador on 11/06/2017.
+ * State of the application when a professional.
  */
-
 public class ProfessionalLoggedState implements AppState{
     private Handler timer;
     private User user;
@@ -34,19 +33,19 @@ public class ProfessionalLoggedState implements AppState{
 
     @Override
     public void performAction(final AppContext context, Object action) {
-        if(action == null) {
+        if(action == null) { // Verifies if user is still logged, this is called when the application begins or is resumed
             if (context.getUser() == null) {
                 context.setState(new BeginState());
             } else {
                 init(context);
             }
-        } else if (action instanceof GoogleMap){
+        } else if (action instanceof GoogleMap){ // Received a working Google Map instance to be used.
             map = (GoogleMap) action;
             map.clear();
-        } else if (action instanceof String[]){
+        } else if (action instanceof String[]){ // User has inputted a new service offer to be shown to the clients.
             String[] params = (String[])action;
             dispatchService(params[0], params[1], params[2], params[3]);
-        } else if (action instanceof JSONArray){
+        } else if (action instanceof JSONArray){  // Job offer received
             JSONArray jobs = (JSONArray)action;
             DialogDecorator dialog = new DialogDecorator();
             try {
@@ -61,7 +60,7 @@ public class ProfessionalLoggedState implements AppState{
             }catch (Exception e){
                 e.printStackTrace();
             }
-        } else if (action instanceof Boolean){
+        } else if (action instanceof Boolean){ // Job offer received and the application user (a professional) has confirmed or denied it.
             if(((Boolean)action).booleanValue()) {
                 DialogDecorator dialog = new DialogDecorator();
                 dialog.getDialog(DialogType.PROGRESS, context.getScreen(), context.getScreen().getHttpHandler()).show();
@@ -72,6 +71,12 @@ public class ProfessionalLoggedState implements AppState{
         }
     }
 
+    /**
+     * Initializes this state.
+     * This state sends to the server the user location for every context.getUpdateInterval() miliseconds, and also
+     * queries for job proposals made by clients. Responses received in performAction, as the action object.
+     * Changes the left menu content to show the options available for a Professional.
+     */
     private void init(final AppContext context) {
         context.getScreen().setMenuItems(new String[]{context.getUser().getFirstName() + " " + context.getUser().getLastName(), StringTable.PROFESSIONAL," ", StringTable.OFFER_TITLE, StringTable.LOGOFF});
         user = context.getUser();
@@ -97,6 +102,9 @@ public class ProfessionalLoggedState implements AppState{
         }, context.getUpdateInterval());
     }
 
+    /**
+     * Dispatches a new service offer to the server.
+     */
     public void dispatchService(String category, String name, String description, String price){
         HashMap<String, String> map = new HashMap<String, String>();
         if(context != null && context.getUser() != null) {

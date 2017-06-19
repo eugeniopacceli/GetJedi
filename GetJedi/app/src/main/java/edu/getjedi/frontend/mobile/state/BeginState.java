@@ -16,13 +16,12 @@ import edu.getjedi.schema.UserFactory;
 import edu.getjedi.schema.UserType;
 
 /**
- * Created by Administrador on 11/06/2017.
+ * Initial state of the application.
  */
-
 public class BeginState implements AppState{
     @Override
     public void performAction(AppContext context, Object action) {
-        if(action == null) {
+        if(action == null) { // Bootstrap, verifies if there is a logged user or user has yet to login;
             if (context.getUser() == null) {
                 context.getScreen().setMenuItems(null);
                 context.getScreen().revealDrawer();
@@ -37,6 +36,7 @@ public class BeginState implements AppState{
             }
         }else{
             try {
+                // Login successfully accomplished
                 if(action != null && action instanceof JSONArray) {
                     JSONArray array = (JSONArray) action;
                     if (array.length() == 0) {
